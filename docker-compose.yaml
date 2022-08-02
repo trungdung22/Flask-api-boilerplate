@@ -1,0 +1,18 @@
+version: "3.8"
+
+services:
+  doctor-db:
+    container_name: doctor-db
+    image: postgres:12.8
+    restart: always
+    environment:
+      - POSTGRES_USER=pguser
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=doctor_db
+    ports:
+      - 5432:5432
+    volumes:
+      - db:/var/lib/postgresql/data
+
+volumes:
+  db:
