@@ -101,9 +101,9 @@ class UserResource(BaseResource):
     @token_required
     def get(self):
         user_schemas = UserSchema(many=True)
-        data, meta = self.paginate_resource(UserModel.query, user_schemas)
+        data, meta = self.paginate_resource(UserModel.query)
         response_data = {
-            "data": data,
+            "data": user_schemas.dump(data),
             "meta": meta
         }
         return self.response_success(response_data)

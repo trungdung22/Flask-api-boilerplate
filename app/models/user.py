@@ -56,7 +56,9 @@ class User(BaseModel):
             os.getenv('SECRET_KEY'),
             algorithm='HS256'
         )
-        return token.decode('UTF-8')
+        if not isinstance(token, str):
+            token = token.decode('UTF-8')
+        return token
 
     def __repr__(self):
         """Represent instance as a unique string."""

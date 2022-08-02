@@ -40,9 +40,10 @@ class DoctorListResource(BaseResource):
             qs = qs.filter(DoctorModel.spec_list.any(SpecializationModel.title == spec_filter))
         if location_filter:
             qs = qs.join(DoctorModel.location).filter(LocationModel.name == location_filter)
-        data, meta = self.paginate_resource(qs, doctor_schemas)
+
+        data, meta = self.paginate_resource(qs)
         response_data = {
-            "data": data,
+            "data": doctor_schemas.dump(data),
             "meta": meta
         }
         return self.response_success(data=response_data)

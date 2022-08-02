@@ -2,6 +2,10 @@ from flask_restx import Resource
 from flask import request
 
 
+def get_lang_code():
+    return request.args.get('lang_code', "eng")
+
+
 class BaseResource(Resource):
 
     # @classmethod
@@ -43,12 +47,11 @@ class BaseResource(Resource):
         return int(page), int(limit)
 
     @classmethod
-    def paginate_resource(cls, query, schema):
+    def paginate_resource(cls, query):
         """
             Paginate the given resource
             Args:
                 query: resource model query
-                schema: model schema
 
             Returns:
                 dict: paginated data and metadata
@@ -60,14 +63,13 @@ class BaseResource(Resource):
         current_page_num = records_query.page
         pages_count = records_query.pages
         total_count = records_query.total
-        data = schema.dump(records_query.items)
         meta = {
             'page': current_page_num,
             'pages_count': pages_count,
             'total_count': total_count
         }
 
-        return data, meta
+        return records_query.items, meta
 
     @classmethod
     def response_success(cls, data=None, message=None, code=200):

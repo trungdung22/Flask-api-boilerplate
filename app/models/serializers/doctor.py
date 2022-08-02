@@ -1,5 +1,6 @@
 from .base import BaseSchema
-from marshmallow import fields
+from marshmallow import fields, post_dump, pre_dump
+from app.utils.utility import get_lang_code
 
 
 class LocationSchema(BaseSchema):
@@ -9,6 +10,12 @@ class LocationSchema(BaseSchema):
 
     class Meta:
         strict = True
+
+    @pre_dump
+    def pre_dump(self, obj, **kwargs):
+        lang_code = get_lang_code()
+        setattr(obj, "description", obj.description_map.get(lang_code))
+        return obj
 
 
 class SpecializationSchema(BaseSchema):

@@ -3,6 +3,7 @@ from app.models.location import Location as LocationModel
 from app.models.specialization import Specialization as SpecializationModel
 from app.models.doctor import Doctor as DoctorModel
 import pytest
+from app.models.keyword import LanguageCode
 
 
 @pytest.mark.usefixtures('db')
@@ -11,7 +12,7 @@ class TestSpec:
 
     def test_create_get_by_id_success(self):
         """Get spec by ID."""
-        england_loc = LocationModel(name="england2", description="england locations")
+        england_loc = LocationModel(name="england2", description={LanguageCode.ENG: "england locations"})
         england_loc.save()
         spec1 = SpecializationModel(title="allerg2y")
         spec1.save()

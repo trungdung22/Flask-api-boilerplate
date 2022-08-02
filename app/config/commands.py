@@ -6,7 +6,8 @@ from app.models.base import db
 from app.models.user import User as UserModel
 from app.models.location import Location as LocationModel
 from app.models.specialization import Specialization as SpecializationModel
-from app.models.doctor import Doctor as DoctorModel
+from app.models.doctor import Doctor as DoctorModel # noqa
+from app.models.keyword import KeywordText, KeywordString, LanguageCode # noqa
 from flask import current_app
 from flask.cli import with_appcontext
 from werkzeug.exceptions import MethodNotAllowed, NotFound
@@ -24,6 +25,7 @@ def test():
     import pytest
     rv = pytest.main([TEST_PATH, '--verbose', '-s', os.path.abspath(__file__)])
     exit(rv)
+
 
 @click.command()
 @with_appcontext
@@ -44,11 +46,24 @@ def seed():
     admin_user.set_password("password123")
     admin_user.save()
 
-    england_loc = LocationModel(name="england", description="england locations")
+    england_loc = LocationModel(name="england")
+    england_loc.description_map = {
+        LanguageCode.ENG: "England location description.",
+        LanguageCode.FRA: "fra translates locations"
+    }
     england_loc.save()
-    us_loc = LocationModel(name="us", description="US locations")
+    us_loc = LocationModel(name="us")
+    us_loc.description_map = {
+        LanguageCode.ENG: "us locations",
+        LanguageCode.FRA: "fra translates us locations"
+    }
     us_loc.save()
-    vietnam_loc = LocationModel(name="vn", description="VN locations")
+    vietnam_loc = LocationModel(name="vn")
+
+    vietnam_loc.description_map = {
+        LanguageCode.ENG: "vn locations",
+        LanguageCode.FRA: "fra translates vn locations"
+    }
     vietnam_loc.save()
 
     spec1 = SpecializationModel(title="allergy")
@@ -61,6 +76,12 @@ def seed():
     spec3.save()
     spec4.save()
     spec5.save()
+
+    doctor_1 = DoctorModel(name="doctor name 1", description="doctor description 1",
+                           price=1000.0, location_id=vietnam_loc.id)
+    doctor_1.add_spec(spec1)
+    doctor_1.add_spec(spec2)
+    doctor_1.save()
 
 
 @click.command()

@@ -1,6 +1,11 @@
 click==8.0.3
 Flask
 Flask-SQLAlchemy==2.5.1
+Flask-Bcrypt
+Flask-Caching
+Flask-Cors
+Flask-Migrate
+flask-restx
 greenlet==1.1.2
 itsdangerous==2.0.1
 Jinja2==3.0.3
@@ -8,5 +13,7 @@ MarkupSafe==2.0.1
 SQLAlchemy==1.4.29
 Werkzeug==2.1.2
 flask-restplus
-WebTest
 pytest
+PyJWT
+python-dotenv
+flask-marshmallow
