@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """ Module for auth token validation """
 
 import os

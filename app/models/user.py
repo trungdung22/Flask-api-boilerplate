@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import datetime
 from app.config.plugins import bcrypt
 from .base import BaseModel, db

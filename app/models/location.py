@@ -1,5 +1,5 @@
-""" Module for Category Model """
-
+# -*- coding: utf-8 -*-
+""" Module for Location Model """
 from .base import BaseModel, db, relationship
 from sqlalchemy.orm.collections import attribute_mapped_collection
 from sqlalchemy.ext.associationproxy import association_proxy

@@ -1,7 +1,7 @@
 from flask import jsonify
 
 
-class BaseException(Exception):
+class Base(Exception):
     status_code = 500
     message = ""
 
@@ -21,25 +21,25 @@ class BaseException(Exception):
         return jsonify(rv)
 
 
-class ItemNotFoundException(BaseException):
+class ItemNotFoundException(Base):
     status_code = 404
 
 
-class UnauthorizedException(BaseException):
+class UnauthorizedException(Base):
     status_code = 401
 
 
-class ForbiddenException(BaseException):
+class ForbiddenException(Base):
     status_code = 403
 
 
-class ServerErrorException(BaseException):
+class ServerErrorException(Base):
     status_code = 500
 
 
-class InvalidPasswordException(BaseException):
+class InvalidPasswordException(Base):
     status_code = 403
 
 
-class InvalidDataException(BaseException):
+class InvalidDataException(Base):
     status_code = 422

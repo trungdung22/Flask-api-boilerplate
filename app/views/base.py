@@ -1,28 +1,14 @@
+# -*- coding: utf-8 -*-
 from flask_restx import Resource
 from app.config.exceptions import InvalidDataException
 from flask import request
 
 
 def get_lang_code():
-    return request.args.get("lang_code", "eng")
+    return request.args.get("lang_code", "en")
 
 
 class BaseResource(Resource):
-
-    # @classmethod
-    # def _validate_pagination_args(cls, **kwargs):
-    #     """ Validates the pagination request params """
-    #
-    #     for key, value in kwargs.items():
-    #         if value is not None:
-    #             try:
-    #                 arg = int(value)
-    #                 if not is_positive_integer(arg):
-    #                     raise_validation_error(
-    #                         f'The {key} must be a positive integer greater than 0')
-    #             except:
-    #                 raise_validation_error(
-    #                     f'The {key} must be a positive integer greater than 0')
 
     @classmethod
     def parse_int(cls, **kwargs):
