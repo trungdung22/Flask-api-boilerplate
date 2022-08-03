@@ -19,7 +19,7 @@ def permission_required(f):
         decoded_token = request.decoded_token
         current_user = User.find_by_id(decoded_token['user']['id'])
 
-        if not current_user['is_admin']:
+        if not current_user.is_admin:
             message = 'Permission denied. You are not authorized to perform this action'
             raise ForbiddenException(message=message)
 

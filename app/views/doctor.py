@@ -2,6 +2,7 @@
 from flask import request
 from sqlalchemy import or_
 from app.middlerwares.token_required import token_required
+from app.middlerwares.permission_required import permission_required
 from app.config.exceptions import InvalidDataException
 from app.config.routers import doctor_namespace
 import app.utils.helpers.swagger.models.doctor as doctor_swagger
@@ -20,9 +21,10 @@ from .base import BaseResource
 
 @doctor_namespace.route("")
 class DoctorListResource(BaseResource):
+    """ Doctor resource list """
 
     @doctor_namespace.doc(
-        "Doctor list",
+        "Doctor list resource",
         parser=doctor_swagger.doctor_list_params,
         responses={
             200: ("doctors data", doctor_swagger.doctor_list_response),
@@ -31,6 +33,7 @@ class DoctorListResource(BaseResource):
     )
     @token_required
     def get(self):
+        """ Endpoint to fetch doctor list """
         args = request.args
         spec_filters = args.get("spec", None)
         location_filter = args.get("location", None)
@@ -69,6 +72,7 @@ class DoctorListResource(BaseResource):
         },
     )
     @token_required
+    @permission_required
     def post(self):
         """ Endpoint to create the doctor """
         payload = request.get_json()

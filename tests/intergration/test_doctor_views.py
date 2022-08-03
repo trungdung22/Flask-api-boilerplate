@@ -1,5 +1,5 @@
 import pytest
-from tests.fixtures.auth import admin_auth_header
+from tests.fixtures.auth import admin_auth_header, normal_auth_header
 import json
 
 
@@ -72,6 +72,28 @@ def test_create_doctor_success(client):
     data = rv.json
     assert rv.status_code == 201
     assert data["status"] == "success"
+
+
+def test_create_doctor_fail_with_admin_right(client):
+    data = {
+        "name": "John Snow",
+        "description": {
+            "en": "By filling out the needed information on the website, you can now make a fake medical prescription.",
+            "fr": "En remplissant les informations nécessaires sur le site Web, vous pouvez désormais faire une fausse ordonnance médicale."
+        },
+        "location": "en",
+        "price": 3000,
+        "spec_list": [
+            "anesthesiology",
+            "dermatology"
+        ]
+    }
+    token_header = normal_auth_header()
+    token_header['accept'] = "application/json"
+    url = '/api/v1/doctors'
+    rv = client.post(url, data=json.dumps(data), headers=token_header)
+    print(rv)
+    assert rv.status_code == 500
 
 
 def test_create_doctor_no_auth_failed(client):

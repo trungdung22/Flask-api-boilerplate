@@ -25,7 +25,7 @@ class UserSignupResource(BaseResource):
     """" Resource class for user signup endpoint """
 
     @user_namespace.doc(
-        "User signup",
+        "User signup resource",
         responses={
             201: ("User created", userSwagger.user_create_success),
             422: "Validations failed."
@@ -54,7 +54,7 @@ class UserLoginResource(BaseResource):
     """" Resource class for user login endpoint """
 
     @user_namespace.doc(
-        "Auth login",
+        "Auth login resource",
         responses={
             200: ("Logged in", userSwagger.auth_success),
             422: "Validations input data failed.",
@@ -89,10 +89,11 @@ class UserLoginResource(BaseResource):
 
 
 @user_namespace.route("")
-class UserResource(BaseResource):
+class UserListResource(BaseResource):
+    """ Resource class for User List endpoint """
 
     @user_namespace.doc(
-        "User list",
+        "User list resource",
         responses={
             200: ("uses data", userSwagger.user_list_success),
             401: "Unauthorized exception",
@@ -100,6 +101,7 @@ class UserResource(BaseResource):
     )
     @token_required
     def get(self):
+        """ Endpoint to fetch user list """
         user_schemas = UserSchema(many=True)
         data, meta = self.paginate_resource(UserModel.query)
         response_data = {

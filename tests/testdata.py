@@ -10,6 +10,10 @@ def seed_data():
     admin_user.set_password("password123")
     admin_user.save()
 
+    normal_user = UserModel(username="user", email="normal.user@gmail.com", is_admin=False)
+    normal_user.set_password("password123")
+    normal_user.save()
+
     england_loc = LocationModel(code="en")
     england_loc.description_map = {
         LanguageCode.EN: "England location description.",
