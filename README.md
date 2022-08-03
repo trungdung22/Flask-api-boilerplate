@@ -47,9 +47,9 @@ Component and tools:
    ```sh
    flask migrate
    ```
-7. Drop database schema
+7. seed database schema
    ```sh
-   flask drop-all
+   flask seed
    ```
 8. Drop database schema (optional)
    ```sh
