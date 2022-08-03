@@ -1,9 +1,10 @@
 from flask_restx import Resource
+from app.config.exceptions import InvalidDataException
 from flask import request
 
 
 def get_lang_code():
-    return request.args.get('lang_code', "eng")
+    return request.args.get("lang_code", "eng")
 
 
 class BaseResource(Resource):
@@ -22,6 +23,39 @@ class BaseResource(Resource):
     #             except:
     #                 raise_validation_error(
     #                     f'The {key} must be a positive integer greater than 0')
+
+    @classmethod
+    def parse_int(cls, **kwargs):
+        """ Validates the pagination request params """
+
+        key = kwargs.get("key", None)
+        if key is None:
+            raise InvalidDataException(message="key not found")
+
+        value = request.args.get(key)
+        if value is None:
+            return None
+        try:
+            return int(value)
+        except Exception as ex:
+            raise InvalidDataException(message="invalid arg value")
+
+    @classmethod
+    def parse_float(cls, **kwargs):
+        """ Validates the pagination request params """
+
+        key = kwargs.get("key", None)
+        if key is None:
+            raise InvalidDataException(message="key not found")
+
+        value = request.args.get(key)
+        if value is None:
+            return None
+
+        try:
+            return float(value)
+        except Exception as ex:
+            raise InvalidDataException(message="invalid arg value")
 
     @classmethod
     def get_pagination_params(cls):

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from flask import request
+from sqlalchemy import or_
 from app.middlerwares.token_required import token_required
 from app.config.exceptions import InvalidDataException
 from app.config.routers import doctor_namespace
@@ -31,15 +32,26 @@ class DoctorListResource(BaseResource):
     @token_required
     def get(self):
         args = request.args
-        spec_filter = args.get("spec", None)
+        spec_filters = args.get("spec", None)
         location_filter = args.get("location", None)
+        lower_price_filter = self.parse_float(key="lower_price")
+        upper_price_filter = self.parse_float(key="upper_price")
         doctor_schemas = DoctorSchema(many=True)
         qs = DoctorModel.query
 
-        if spec_filter:
-            qs = qs.filter(DoctorModel.spec_list.any(SpecializationModel.title == spec_filter))
+        if lower_price_filter:
+            qs = qs.filter(DoctorModel.price >= lower_price_filter)
+        if upper_price_filter:
+            qs = qs.filter(DoctorModel.price <= upper_price_filter)
+        if spec_filters:
+            spec_filter_codes = spec_filters.split(",")
+            spec_filter_list = []
+            for spec_code in spec_filter_codes:
+                spec_filter_list.append(DoctorModel.spec_list.any(SpecializationModel.code == spec_code))
+            qs = qs.filter(or_(*spec_filter_list))
+
         if location_filter:
-            qs = qs.join(DoctorModel.location).filter(LocationModel.name == location_filter)
+            qs = qs.join(DoctorModel.location).filter(LocationModel.code == location_filter)
 
         data, meta = self.paginate_resource(qs)
         response_data = {
@@ -67,14 +79,16 @@ class DoctorListResource(BaseResource):
             raise InvalidDataException(message=err.messages)
 
         spec_list = doctor_data.pop("spec_list")
-        location_name = doctor_data.pop("location")
-        location = LocationModel.query.filter_by(name=location_name).first()
+        location_code = doctor_data.pop("location")
+        location = LocationModel.query.filter_by(code=location_code).first()
 
         spec_objs = []
-        for spec_title in spec_list:
-            spec = SpecializationModel.query.filter_by(title=spec_title).first()
+        for spec_code in spec_list:
+            spec = SpecializationModel.query.filter_by(code=spec_code).first()
             spec_objs.append(spec)
+        description_map = doctor_data.pop("description")
         doctor = DoctorModel(**doctor_data)
+        doctor.description_map = description_map
         for spec_obj in spec_objs:
             doctor.add_spec(spec_obj)
         doctor.location = location
@@ -88,6 +102,7 @@ class DoctorResource(BaseResource):
 
     @doctor_namespace.doc(
         "Doctor detail",
+        parser=doctor_swagger.doctor_detail_params,
         responses={
             200: ("doctor data", doctor_swagger.doctor_data),
             401: "Unauthorized exception."

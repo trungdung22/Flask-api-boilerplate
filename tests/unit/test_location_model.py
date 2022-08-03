@@ -9,13 +9,12 @@ class TestLocation:
 
     def test_create_get_by_id_success(self):
         """Get location by ID."""
-        loc = LocationModel(name="location1",
-                            description={
-                                   LanguageCode.ENG: "vn locations",
-                                   LanguageCode.FRA: "fra translates vn locations"
+        loc = LocationModel(code="location1",
+                            description_map={
+                                   LanguageCode.FR: "vn locations",
+                                   LanguageCode.EN: "fra translates vn locations"
                             })
         loc.save()
 
         retrieved = LocationModel.find_by_id(loc.id)
-        print(retrieved.description)
         assert retrieved.id == loc.id

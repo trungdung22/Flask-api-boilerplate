@@ -12,17 +12,27 @@ class TestSpec:
 
     def test_create_get_by_id_success(self):
         """Get spec by ID."""
-        england_loc = LocationModel(name="england2", description={LanguageCode.ENG: "england locations"})
-        england_loc.save()
-        spec1 = SpecializationModel(title="allerg2y")
-        spec1.save()
-        spec2 = SpecializationModel(title="immunology2")
-        spec2.save()
+        loc = LocationModel(code="location1",
+                            description_map={
+                                LanguageCode.FR: "vn locations",
+                                LanguageCode.EN: "fra translates vn locations"
+                            })
+        loc.save()
 
-        doctor_1 = DoctorModel(name="doctor name 1", description="doctor description 1",
-                               price=1000.0, location_id=england_loc.id)
-        doctor_1.add_spec(spec1)
-        doctor_1.add_spec(spec2)
+        spec = SpecializationModel(code="spec1")
+        spec.title_map = {
+            LanguageCode.EN: "immunology",
+            LanguageCode.FR: "immunologie"
+        }
+        spec.save()
+
+        doctor_1 = DoctorModel(name="doctor name 1",
+                               price=1000.0, location_id=loc.id)
+        doctor_1.description_map = {
+            LanguageCode.EN: "By filling out the needed information on the website, you can now make a fake medical prescription.",
+            LanguageCode.FR: "En remplissant les informations nécessaires sur le site Web, vous pouvez désormais faire une fausse ordonnance médicale."
+        }
+        doctor_1.add_spec(spec)
         doctor_1.save()
         retrieved = DoctorModel.find_by_id(doctor_1.id)
         assert retrieved.id == doctor_1.id

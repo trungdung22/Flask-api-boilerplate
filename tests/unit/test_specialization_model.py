@@ -1,4 +1,5 @@
 from app.models.specialization import Specialization as SpecializationModel
+from app.models.keyword import LanguageCode
 import pytest
 
 
@@ -8,7 +9,11 @@ class TestSpec:
 
     def test_create_get_by_id_success(self):
         """Get spec by ID."""
-        spec = SpecializationModel(title="spec1")
+        spec = SpecializationModel(code="spec1")
+        spec.title_map = {
+            LanguageCode.EN: "immunology",
+            LanguageCode.FR: "immunologie"
+        }
         spec.save()
 
         retrieved = SpecializationModel.find_by_id(spec.id)
